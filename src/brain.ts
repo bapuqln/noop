@@ -112,7 +112,7 @@ const BRAIN_DIR = join(HOME_DIR, "brain"); // empty cwd: no project CLAUDE.md, n
  * CLI start (~2 s). One process per conversation (no history carries over); the next one is spawned as this one is used. */
 export class ClaudeModel implements Model {
   private next: { proc: ReturnType<typeof Bun.spawn>; system: string } | null = null;
-  constructor(private model = "claude-haiku-5-5", private cli = "claude", private timeoutMs = 45_000) {}
+  constructor(private model = "claude-haiku-4-5-20251001", private cli = "claude", private timeoutMs = 45_000) {}
   private spawn(system: string) {
     mkdirSync(BRAIN_DIR, { recursive: true });
     const proc = Bun.spawn([this.cli, "-p", "--input-format", "stream-json", "--output-format", "stream-json", "--verbose",

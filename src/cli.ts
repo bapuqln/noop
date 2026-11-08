@@ -136,7 +136,7 @@ async function processTask(path: string, cfg: Cfg, host: string) {
   let cli = acct.cli, out = "", res!: ReturnType<typeof parseResult>;
   for (let hop = 0; ; hop++) { // quota / login trouble: switch account or CLI on this host instead of waiting it out
     cli = acct.cli;
-    const model = cfg.clis?.[cli]?.model ?? (cli === "claude" ? "claude-opus-5-5" : "default");
+    const model = cfg.clis?.[cli]?.model ?? (cli === "claude" ? "claude-opus-5" : "default");
     meta.cli_used = cli; meta.model = model; meta.account = acct.name;
     await locked(async () => {
       if (existsSync(path)) writeDoc(path, meta, body); // the app shows which model runs it
@@ -821,7 +821,7 @@ async function daemon(cfg: Cfg) {
     },
   });
   setApplyOp((op) => runTool(store, op?.tool, op));
-  const model = new ClaudeModel(String(cfg.router?.model ?? "claude-haiku-5-5"), String(cfg.router?.cli ?? "claude"), (cfg.router?.timeout_seconds ?? 45) * 1000);
+  const model = new ClaudeModel(String(cfg.router?.model ?? "claude-haiku-4-5-20251001"), String(cfg.router?.cli ?? "claude"), (cfg.router?.timeout_seconds ?? 45) * 1000);
   if (isPrimary(cfg, host) && Bun.which(String(cfg.router?.cli ?? "claude"))) model.warm(SYSTEM);
   if (isPrimary(cfg, host)) startServer(cfg, async (text, { reply, answered, sentAt, thread, channel }) => {
     const got = Date.now();

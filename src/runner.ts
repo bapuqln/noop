@@ -115,7 +115,7 @@ export function cliCommand(cli: string, cfg: Cfg, gateOverride = false): string[
   if (Array.isArray(c.command)) return c.command;
   if (cli === "claude") {
     const cmd = ["claude", "-p", "--output-format", "stream-json", "--verbose", "--permission-mode", c.permission_mode ?? "bypassPermissions"];
-    cmd.push("--model", c.model ?? "claude-opus-5-5");
+    cmd.push("--model", c.model ?? "claude-opus-5");
     // the agent signature is the only attribution; drop Claude Code's own "Generated with" / co-author lines
     cmd.push("--settings", JSON.stringify({ attribution: { commit: "", pr: "" }, includeCoAuthoredBy: false }));
     const deny = claudeDisallowed(cfg, gateOverride);
@@ -264,7 +264,7 @@ export function parseResult(out: string): Result {
 
 /** The models that route each owner message, fastest first: a choice made within seconds, not a judgement.
  * `[router] cli/model` in config.toml puts one first; the others are fallbacks when its CLI is missing or fails. */
-const ROUTERS = [{ cli: "claude", model: "claude-haiku-5-5" }, { cli: "codex", model: "gpt-6-luna" }];
+const ROUTERS = [{ cli: "claude", model: "claude-haiku-4-5-20251001" }, { cli: "codex", model: "gpt-6-luna" }];
 
 /** One quick structured call for routing (the fastest model available); null when none answered. */
 export async function quickAsk(prompt: string, cfg: Cfg, logFile: string): Promise<any> {
@@ -291,7 +291,7 @@ export async function quickAsk(prompt: string, cfg: Cfg, logFile: string): Promi
 export async function ask(prompt: string, cfg: Cfg, logFile: string): Promise<any> {
   const cli = cfg.judge?.cli ?? "claude";
   const cmd = cli === "claude"
-    ? ["claude", "-p", "--output-format", "text", "--model", cfg.judge?.model ?? "claude-opus-5-5", "--tools", ""]
+    ? ["claude", "-p", "--output-format", "text", "--model", cfg.judge?.model ?? "claude-opus-5", "--tools", ""]
     : ["codex", "exec", "--skip-git-repo-check", "-"];
   const proc = Bun.spawn(cmd, { cwd: ROOT, stdin: new Blob([prompt]), stdout: "pipe", stderr: "pipe" });
   const timer = setTimeout(() => proc.kill("SIGKILL"), (cfg.judge?.timeout_minutes ?? 10) * 60_000); // runs inside locked()

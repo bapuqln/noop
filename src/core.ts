@@ -341,7 +341,7 @@ async function _claim(path: string, host: string): Promise<string | null> {
 // ------------------------------------------------------------------ journal & memory
 export function journal(host: string, line: string) {
   const f = P("journal", `${today()}.md`);
-  if (!existsSync(f)) writeFileSync(f, `# Journal ${today()}\n\n`);
+  if (!existsSync(f)) { mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, `# Journal ${today()}\n\n`); }
   appendFileSync(f, `- ${hhmm()} \`${host}\` ${line}\n`);
 }
 
